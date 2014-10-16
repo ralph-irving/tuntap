@@ -146,9 +146,13 @@ static	struct dev_ops tun_ops = {
 };
 
 static struct modldrv modldrv = {
-  &mod_driverops,	/* Type of module(driver) */
-  "TUN/TAP driver "TUN_VER,
-  &tun_ops		/* driver ops */
+  &mod_driverops,       /* Type of module(driver) */
+#ifdef TUNTAP_TAP
+  "TAP driver v"TUN_VER,
+#elif defined(TUNTAP_TUN)
+  "TUN driver v"TUN_VER,
+#endif
+  &tun_ops              /* driver ops */
 };
 
 static struct modlinkage modlinkage = {
@@ -166,9 +170,6 @@ static struct tunstr *tun_str;
 
 int _init(void)
 {
-  cmn_err(CE_CONT, "?Universal TUN/TAP device driver ver %s "
-		   "(C) 1999-2000 Maxim Krasnyansky\n", TUN_VER);
-
   DBG(CE_CONT,"tun: _init\n");
   return mod_install(&modlinkage);
 }
